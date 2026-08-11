@@ -3,6 +3,7 @@
 return [
     '_encodeURIComponent' => function($fail, $succeed, $input) {
         try {
+            if (!mb_check_encoding($input, 'UTF-8')) return $fail(new \Exception("URI malformed"));
             return $succeed(rawurlencode($input));
         } catch (\Throwable $e) {
             return $fail($e);
@@ -11,7 +12,9 @@ return [
 
     '_decodeURIComponent' => function($fail, $succeed, $input) {
         try {
-            return $succeed(rawurldecode($input));
+            $decoded = rawurldecode($input);
+            if (!mb_check_encoding($decoded, 'UTF-8')) return $fail(new \Exception("URI malformed"));
+            return $succeed($decoded);
         } catch (\Throwable $e) {
             return $fail($e);
         }
@@ -19,6 +22,7 @@ return [
 
     '_encodeFormURLComponent' => function($fail, $succeed, $input) {
         try {
+            if (!mb_check_encoding($input, 'UTF-8')) return $fail(new \Exception("URI malformed"));
             return $succeed(str_replace('%20', '+', rawurlencode($input)));
         } catch (\Throwable $e) {
             return $fail($e);
@@ -27,7 +31,9 @@ return [
 
     '_decodeFormURLComponent' => function($fail, $succeed, $input) {
         try {
-            return $succeed(rawurldecode(str_replace('+', ' ', $input)));
+            $decoded = rawurldecode(str_replace('+', ' ', $input));
+            if (!mb_check_encoding($decoded, 'UTF-8')) return $fail(new \Exception("URI malformed"));
+            return $succeed($decoded);
         } catch (\Throwable $e) {
             return $fail($e);
         }
@@ -35,6 +41,7 @@ return [
 
     '_encodeURI' => function($fail, $succeed, $input) {
         try {
+            if (!mb_check_encoding($input, 'UTF-8')) return $fail(new \Exception("URI malformed"));
             // Very naive encodeURI for PHP since urlencode/rawurlencode encode everything
             $reserved = [
                 '%21' => '!', '%2A' => '*', '%27' => "'", '%28' => '(', '%29' => ')',
@@ -50,7 +57,9 @@ return [
 
     '_decodeURI' => function($fail, $succeed, $input) {
         try {
-            return $succeed(rawurldecode($input));
+            $decoded = rawurldecode($input);
+            if (!mb_check_encoding($decoded, 'UTF-8')) return $fail(new \Exception("URI malformed"));
+            return $succeed($decoded);
         } catch (\Throwable $e) {
             return $fail($e);
         }
